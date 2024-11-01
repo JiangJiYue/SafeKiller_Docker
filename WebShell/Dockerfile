@@ -11,7 +11,8 @@ RUN apt-get update && \
 # 添加 PHP 5.6 的 PPA 并安装
 RUN add-apt-repository ppa:ondrej/php && \
     apt-get update && \
-    apt-get install -y php5.6 php5.6-fpm
+    apt-get install -y php5.6 php5.6-fpm && \
+    rm -rf /var/lib/apt/lists/*
 
 # 安装 OpenResty
 RUN wget https://openresty.org/download/openresty-1.21.4.1.tar.gz -P /tmp && \
@@ -20,12 +21,13 @@ RUN wget https://openresty.org/download/openresty-1.21.4.1.tar.gz -P /tmp && \
     ./configure --prefix=/usr/local/openresty --sbin-path=/usr/sbin/nginx --conf-path=/usr/local/openresty/nginx.conf --pid-path=/var/run/nginx.pid --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --lock-path=/var/lock/nginx.lock && \
     make && make install && \
     mkdir -p /var/tmp/nginx/client_body && \
-    mkdir -p /usr/local/openresty/nginx/logs/
+    mkdir -p /usr/local/openresty/nginx/logs/ && \
+    rm -rf /tmp/openresty-1.21.4.1*
 
 # 安装 Tomcat
 RUN wget https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.19/bin/apache-tomcat-8.5.19.tar.gz -P /tmp && \
     tar xf /tmp/apache-tomcat-8.5.19.tar.gz -C /usr/local/ && \
-    rm /tmp/apache-tomcat-8.5.19.tar.gz
+    rm -rf /tmp/apache-tomcat-*
 
 RUN mkdir -p /run/php
 RUN chown -R www-data:www-data /run/php
@@ -42,8 +44,8 @@ COPY nginx/nginx.conf /usr/local/openresty
 COPY nginx/php/       /usr/local/openresty/nginx/html
 COPY tomcat/          /usr/local/apache-tomcat-8.5.19/webapps/ROOT
 # 复制启动脚本到容器中
-COPY start.sh /usr/local/bin/start.sh
-RUN chmod +x /usr/local/bin/start.sh
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
 
 # 使用启动脚本
-CMD ["/usr/local/bin/start.sh"]
+CMD ["/start.sh"]

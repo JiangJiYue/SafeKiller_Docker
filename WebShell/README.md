@@ -40,7 +40,7 @@
 要构建 Docker 镜像，请在项目根目录下运行以下命令：
 
 ```bash
-docker build -f Dockerfile -t "webshell:v2" .
+docker build -f Dockerfile -t "webshell" .
 ```
 
 ## 运行 Docker 容器
@@ -48,7 +48,7 @@ docker build -f Dockerfile -t "webshell:v2" .
 要运行构建的 Docker 镜像，请使用以下命令：
 
 ```bash
-docker run -d -p 80:80 -p 8080:8080 webshell:v2
+docker run -d -p 80:80 -p 8080:8080 webshell
 ```
 
 这将启动一个容器，并将主机的 80 和 8080 端口映射到容器的相应端口。
